@@ -1,17 +1,17 @@
-
 import threading
 import keyboard
 import time
 
 from app.map import Map
 from app.renderer import Renderer
-from app.action import GenerateTree, GenerateRocks, Action, GenerateGrass, GenerateHerbivore, GeneratePredator, Move
-from app.entity import Tree
+from app.action import GenerateTree, GenerateRocks, Action, GenerateGrass, GenerateHerbivore, GeneratePredator, Move, \
+    GenerateWorld
 
 
 class Simulation:
-    init_actions: list[Action] = [GenerateRocks(), GenerateTree(), GenerateGrass(), GenerateHerbivore(1),
-                                  GeneratePredator(0)]
+    init_actions: list[Action] = [GenerateWorld(), GenerateRocks(), GenerateTree(), GenerateGrass(3),
+                                  GenerateHerbivore(3),
+                                  GeneratePredator(1)]
     turn_actions: list[Action] = [Move()]
 
     def __init__(self, map_h: int = 5, map_w: int = 5):
@@ -41,14 +41,14 @@ class Simulation:
         print("Start simulation...")
         for i in range(30):
             self.next_turn()
-            time.sleep(2)
+            time.sleep(1)
         print("Simulation was stopped")
 
     def start_simulation_eternal(self):
         print("Start simulation...")
         while True:
             self.next_turn()
-            time.sleep(0.5)
+            time.sleep(2)
             if keyboard.is_pressed('1'):
                 print("Pause. Press 1 to continue...")
                 keyboard.wait('2')
@@ -59,5 +59,3 @@ class Simulation:
                 break
 
         print("Simulation was stopped")
-
-
