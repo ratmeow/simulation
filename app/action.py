@@ -59,7 +59,7 @@ class GeneratePredator(GenerateEntities):
     def execute(self, map_: Map):
         available_positions = random.sample(map_.get_all_available_positions(), self.count)
         for pos in available_positions:
-            predator = Predator(speed=2, hp=3, position=pos, attack_power=1)
+            predator = Predator(speed=2, hp=3, position=pos, attack_power=3)
             map_.add_creature(position=pos, item=predator)
 
 
