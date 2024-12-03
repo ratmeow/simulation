@@ -47,4 +47,4 @@ class Predator(Creature):
             super().move(map_=map_, new_position=new_position)
 
     def __str__(self):
-        return "🍖".ljust(2) if self.eating_flag else "🐅".ljust(2)
+        return "🍖" if self.eating_flag else "🐅"

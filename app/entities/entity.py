@@ -7,19 +7,19 @@ class Entity(ABC):
 
 class Terra(Entity):
     def __str__(self):
-        return "_".ljust(3)
+        return "🏾"
 
 
 class Grass(Entity):
     def __str__(self):
-        return "🌿".ljust(3)
+        return "🌿"
 
 
 class Rock(Entity):
     def __str__(self):
-        return "🗿".ljust(3)
+        return "🗿"
 
 
 class Tree(Entity):
     def __str__(self):
-        return "🌳".ljust(2)
+        return "🌳"

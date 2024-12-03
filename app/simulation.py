@@ -64,14 +64,14 @@ class Simulation:
     def _monitor_keys(self):
         """Отслеживание нажатия клавиш в отдельном потоке."""
         while True:
-            if keyboard.is_pressed("1"):
+            if keyboard.is_pressed("space"):
                 print("Pause. Press 2 to continue...")
                 self.pause_flag.set()
-                keyboard.wait("2")
+                keyboard.wait("space")
                 self.pause_flag.clear()
                 print("Simulation is running...")
 
-            if keyboard.is_pressed("0"):
+            if keyboard.is_pressed("enter"):
                 print("Stopping simulation ...")
                 self.stop_flag.set()
                 break
