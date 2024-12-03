@@ -1,9 +1,9 @@
 import itertools
-from app.entity import Entity
+
+from app.entities import Entity
 
 
 class Cell:
-
     def __init__(self):
         self.storage = []
 
@@ -29,7 +29,9 @@ class Map:
     def __init__(self, height: int, width: int):
         self.width = width
         self.height = height
-        self.__schema: dict[tuple, Cell] = {(x, y): Cell() for x, y in itertools.product(range(height), range(width))}
+        self.__schema: dict[tuple, Cell] = {
+            (x, y): Cell() for x, y in itertools.product(range(height), range(width))
+        }
 
     @property
     def schema(self):

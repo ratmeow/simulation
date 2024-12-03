@@ -1,13 +1,13 @@
-from typing import Optional
-from collections import deque
-from app.map import Map
 import heapq
+from collections import deque
+from typing import Optional
+
+from app.map import Map
 
 
-def bfs_retrieve(graph: Map,
-                 start: tuple[int, int],
-                 desired_object,
-                 obstacle) -> Optional[list[tuple]]:
+def bfs_retrieve(
+    graph: Map, start: tuple[int, int], desired_object, obstacle
+) -> Optional[list[tuple]]:
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
     queue = deque([start])
     visited = set()
@@ -29,8 +29,12 @@ def bfs_retrieve(graph: Map,
 
         for dx, dy in directions:
             neighbor = (x + dx, y + dy)
-            if (0 <= neighbor[0] < graph.height) and (0 <= neighbor[1] < graph.width) and (
-                    neighbor not in visited) and not isinstance(graph.schema[neighbor].get(), obstacle):
+            if (
+                (0 <= neighbor[0] < graph.height)
+                and (0 <= neighbor[1] < graph.width)
+                and (neighbor not in visited)
+                and not isinstance(graph.schema[neighbor].get(), obstacle)
+            ):
                 queue.append(neighbor)
                 visited.add(neighbor)
                 parent[neighbor] = current
@@ -38,10 +42,7 @@ def bfs_retrieve(graph: Map,
 
 
 def a_star_retrieve(
-        graph: Map,
-        start: tuple[int, int],
-        desired_object,
-        obstacle
+    graph: Map, start: tuple[int, int], desired_object, obstacle
 ) -> Optional[list[tuple[int, int]]]:
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
@@ -69,9 +70,9 @@ def a_star_retrieve(
         for dx, dy in directions:
             neighbor = (x + dx, y + dy)
             if (
-                    0 <= neighbor[0] < graph.height and
-                    0 <= neighbor[1] < graph.width and
-                    not isinstance(graph.schema[neighbor].get(), obstacle)
+                0 <= neighbor[0] < graph.height
+                and 0 <= neighbor[1] < graph.width
+                and not isinstance(graph.schema[neighbor].get(), obstacle)
             ):
                 approx_g_score = g_score[current] + 1
                 if neighbor not in g_score or approx_g_score < g_score[neighbor]:

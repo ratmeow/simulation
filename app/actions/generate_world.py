@@ -1,20 +1,19 @@
 import random
 from typing import Type
-from abc import abstractmethod, ABC
+
+from app.entities import Entity, Grass, Rock, Terra, Tree
 from app.map import Map
-from app.specific_entities import Grass, Rock, Tree, Herbivore, Predator, Creature, Terra
-from app.entity import Entity
 
-
-class Action(ABC):
-
-    @abstractmethod
-    def execute(self, map_: Map):
-        pass
+from .action import Action
 
 
 class GenerateStaticObjects(Action):
-    def __init__(self, entity: Type[Entity], ratio: float = 0.1, sparse: float = 0.2, ):
+    def __init__(
+        self,
+        entity: Type[Entity],
+        ratio: float = 0.1,
+        sparse: float = 0.2,
+    ):
         self.ratio = ratio
         self.sparse = sparse
         self.entity = entity
@@ -43,7 +42,6 @@ class GenerateStaticObjects(Action):
 
 
 class GenerateRocks(GenerateStaticObjects):
-
     def __init__(self, ratio, sparse):
         super().__init__(ratio=ratio, sparse=sparse, entity=Rock)
 
@@ -67,34 +65,3 @@ class GenerateWorld(Action):
         GenerateRocks(ratio=0.1, sparse=0.2).execute(map_)
         GenerateTree(ratio=0.15, sparse=0.33).execute(map_)
         GenerateGrass(ratio=0.1, sparse=0.33).execute(map_)
-
-
-class GenerateCreature(Action):
-    def __init__(self, count: int = 1):
-        self.count = count
-
-    def create_creature(self, position: tuple[int, int]) -> Entity:
-        pass
-
-    def execute(self, map_: Map):
-        available_positions = random.sample(map_.get_all_available_positions(), self.count)
-        for pos in available_positions:
-            map_.add_creature(position=pos, item=self.create_creature(position=pos))
-
-
-class GenerateHerbivore(GenerateCreature):
-    def create_creature(self, position: tuple[int, int]) -> Entity:
-        return Herbivore(speed=1, hp=3, position=position)
-
-
-class GeneratePredator(GenerateCreature):
-    def create_creature(self, position: tuple[int, int]) -> Entity:
-        return Predator(speed=2, hp=10, position=position, attack_power=3)
-
-
-class Move(Action):
-
-    def execute(self, map_: Map):
-        alive_creatures = map_.get_alive_creatures()
-        for creature in alive_creatures:
-            creature.make_move(map_=map_)

@@ -1,23 +1,23 @@
 import threading
-import keyboard
 import time
 
+import keyboard
+
+from app.actions import Action, GenerateHerbivore, GeneratePredator, GenerateWorld, Move
 from app.map import Map
-from app.renderer import Renderer
-from app.action import Action, GenerateHerbivore, GeneratePredator, Move, \
-    GenerateWorld
+from app.map.renderer import Renderer
 
 
 class Simulation:
-
-    def __init__(self,
-                 map_h: int = 5,
-                 map_w: int = 5,
-                 max_turn: int = 30,
-                 world_speed: int = 2,
-                 herbivore_count: int = 1,
-                 predator_count: int = 1
-                 ):
+    def __init__(
+        self,
+        map_h: int = 5,
+        map_w: int = 5,
+        max_turn: int = 30,
+        world_speed: float = 2,
+        herbivore_count: int = 1,
+        predator_count: int = 1,
+    ):
         self.map: Map = Map(height=map_h, width=map_w)
         self.max_turn = max_turn
         self.world_speed = world_speed
@@ -26,6 +26,10 @@ class Simulation:
         self.counter: int = 0
         self.pause_flag = threading.Event()
         self.stop_flag = threading.Event()
+        self.key_thread = threading.Thread(
+            target=self._monitor_keys, daemon=True
+        )  # Поток для отслеживания клавиш
+        self.key_thread.start()
 
         self.init_actions: list[Action] = [GenerateWorld()]
         if herbivore_count > 0:
@@ -50,25 +54,27 @@ class Simulation:
             self.renderer.render(self.map)
             print(f"Turn: {self.counter}")
 
-    def start_simulation(self):
+    def start(self):
         print("Start simulation...")
-        for i in range(self.max_turn):
-            self.next_turn()
-            time.sleep(self.world_speed)
-        print("Simulation was stopped")
+        while not self.stop_flag.is_set() and self.counter < self.max_turn:
+            if not self.pause_flag.is_set():
+                self.next_turn()
+                time.sleep(self.world_speed)
 
-    def start_simulation_eternal(self):
-        print("Start simulation...")
+        print("Simulation has been stopped")
+
+    def _monitor_keys(self):
+        """Отслеживание нажатия клавиш в отдельном потоке."""
         while True:
-            self.next_turn()
-            time.sleep(self.world_speed)
-            if keyboard.is_pressed('1'):
-                print("Pause. Press 1 to continue...")
-                keyboard.wait('2')
+            if keyboard.is_pressed("1"):
+                print("Pause. Press 2 to continue...")
+                self.pause_flag.set()
+                keyboard.wait("2")
+                self.pause_flag.clear()
                 print("Simulation is running...")
-                continue
-            if keyboard.is_pressed('0'):
-                print("Stopping simulation ...")
-                break
 
-        print("Simulation was stopped")
+            if keyboard.is_pressed("0"):
+                print("Stopping simulation ...")
+                self.stop_flag.set()
+                break
+            time.sleep(0.1)

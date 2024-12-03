@@ -1,11 +1,12 @@
-from app.map import Map
 import os
+
+from .map import Map
 
 
 class Renderer:
     @staticmethod
     def render(map_: Map):
-        os.system('cls')
+        os.system("cls")
         i = 0
         for cell in map_.schema:
             print(map_.schema[cell].get(), end=" ")
