@@ -26,9 +26,7 @@ class Simulation:
         self.counter: int = 0
         self.pause_flag = threading.Event()
         self.stop_flag = threading.Event()
-        self.key_thread = threading.Thread(
-            target=self._monitor_keys, daemon=True
-        )  # Поток для отслеживания клавиш
+        self.key_thread = threading.Thread(target=self._monitor_keys, daemon=True)
         self.key_thread.start()
 
         self.init_actions: list[Action] = [GenerateWorld()]

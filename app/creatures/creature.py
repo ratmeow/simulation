@@ -19,10 +19,7 @@ class Creature(Entity):
 
         path = self.find_path(map_)
         if path is not None:
-            if self.speed >= len(path):
-                new_position = path[-1]
-            else:
-                new_position = path[self.speed]
+            new_position = path[min(self.speed, len(path) - 1)]
             if self.should_eat(map_, new_position):
                 self.eat(map_=map_, meal_position=new_position)
 

@@ -14,7 +14,6 @@ class Predator(Creature):
         self.attack_power = attack_power
         self.obstacles = (Tree, Rock, Predator)
         self.meal = Herbivore
-        self.attacking: bool = False
         self.attack_mode: bool = False
 
     def eat(self, map_: Map, meal_position: tuple[int, int]):
