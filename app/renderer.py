@@ -10,6 +10,6 @@ class Renderer:
         for cell in map_.schema:
             print(map_.schema[cell].get(), end=" ")
             i += 1
-            if i == map_.weight:
+            if i == map_.width:
                 print()
                 i = 0

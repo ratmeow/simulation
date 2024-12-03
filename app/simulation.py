@@ -4,23 +4,36 @@ import time
 
 from app.map import Map
 from app.renderer import Renderer
-from app.action import GenerateTree, GenerateRocks, Action, GenerateGrass, GenerateHerbivore, GeneratePredator, Move, \
+from app.action import Action, GenerateHerbivore, GeneratePredator, Move, \
     GenerateWorld
 
 
 class Simulation:
-    init_actions: list[Action] = [GenerateWorld(), GenerateRocks(), GenerateTree(), GenerateGrass(3),
-                                  GenerateHerbivore(3),
-                                  GeneratePredator(1)]
-    turn_actions: list[Action] = [Move()]
 
-    def __init__(self, map_h: int = 5, map_w: int = 5):
-        self.map: Map = Map(height=map_h, weight=map_w)
-        self.counter: int = 0
+    def __init__(self,
+                 map_h: int = 5,
+                 map_w: int = 5,
+                 max_turn: int = 30,
+                 world_speed: int = 2,
+                 herbivore_count: int = 1,
+                 predator_count: int = 1
+                 ):
+        self.map: Map = Map(height=map_h, width=map_w)
+        self.max_turn = max_turn
+        self.world_speed = world_speed
         self.renderer: Renderer = Renderer()
 
+        self.counter: int = 0
         self.pause_flag = threading.Event()
         self.stop_flag = threading.Event()
+
+        self.init_actions: list[Action] = [GenerateWorld()]
+        if herbivore_count > 0:
+            self.init_actions.append(GenerateHerbivore(herbivore_count))
+        if predator_count > 0:
+            self.init_actions.append(GeneratePredator(predator_count))
+
+        self.turn_actions: list[Action] = [Move()]
 
         print("Map Initialize...")
         self.init_map()
@@ -39,16 +52,16 @@ class Simulation:
 
     def start_simulation(self):
         print("Start simulation...")
-        for i in range(30):
+        for i in range(self.max_turn):
             self.next_turn()
-            time.sleep(1)
+            time.sleep(self.world_speed)
         print("Simulation was stopped")
 
     def start_simulation_eternal(self):
         print("Start simulation...")
         while True:
             self.next_turn()
-            time.sleep(2)
+            time.sleep(self.world_speed)
             if keyboard.is_pressed('1'):
                 print("Pause. Press 1 to continue...")
                 keyboard.wait('2')

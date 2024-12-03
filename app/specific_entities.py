@@ -1,6 +1,6 @@
 from app.entity import Entity
 from app.map import Map
-from app.utils import bfs_retrieve
+from app.utils import bfs_retrieve, a_star_retrieve
 from abc import ABC, abstractmethod
 
 
@@ -32,6 +32,7 @@ class Creature(Entity):
         self.position = position
 
     def make_move(self, map_: Map):
+        """Сделать ход"""
         if self.eating_flag:
             self.eating_flag = False
             return
@@ -58,6 +59,7 @@ class Creature(Entity):
         pass
 
     def move(self, map_, new_position):
+        """Переместиться на новую позицию."""
         map_.move_entity(old_position=self.position, new_position=new_position)
         self.position = new_position
 
@@ -77,12 +79,12 @@ class Predator(Creature):
         self.attack_mode: bool = False
 
     def eat(self, map_: Map, meal_position: tuple[int, int]):
-        if self.attack(map_=map_, meal_position=meal_position):
+        if self.try_kill(map_=map_, meal_position=meal_position):
             self.eating_flag = True
             self.attack_mode = False
             map_.remove_creature(position=meal_position)
 
-    def attack(self, map_: Map, meal_position: tuple[int, int]):
+    def try_kill(self, map_: Map, meal_position: tuple[int, int]) -> bool:
         prey: Creature = map_.get_cell(position=meal_position)
         prey.hp -= self.attack_power
         if prey.hp <= 0:
@@ -116,7 +118,7 @@ class Herbivore(Creature):
         map_.remove_entity(position=meal_position)
 
     def find_path(self, map_: Map):
-        return bfs_retrieve(graph=map_, start=self.position, desired_object=self.meal, obstacle=self.obstacles)
+        return a_star_retrieve(graph=map_, start=self.position, desired_object=self.meal, obstacle=self.obstacles)
 
     def should_eat(self, map_: Map, new_position: tuple[int, int]) -> bool:
         return isinstance(map_.get_cell(position=new_position), self.meal)

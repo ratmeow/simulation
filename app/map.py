@@ -1,5 +1,4 @@
 import itertools
-from typing import Optional
 from app.entity import Entity
 
 
@@ -27,17 +26,17 @@ class Map:
     __schema: dict[tuple, object] = None
     creature_storage = []
 
-    def __init__(self, height: int, weight: int):
-        self.weight = weight
+    def __init__(self, height: int, width: int):
+        self.width = width
         self.height = height
-        self.__schema: dict[tuple, Cell] = {(x, y): Cell() for x, y in itertools.product(range(height), range(weight))}
+        self.__schema: dict[tuple, Cell] = {(x, y): Cell() for x, y in itertools.product(range(height), range(width))}
 
     @property
     def schema(self):
         return self.__schema
 
     def get_all_positions(self) -> list[tuple]:
-        return list(itertools.product(range(self.height), range(self.weight)))
+        return list(itertools.product(range(self.height), range(self.width)))
 
     def get_all_available_positions(self) -> list[tuple]:
         available_positions = []
@@ -70,6 +69,3 @@ class Map:
 
     def get_cell(self, position: tuple):
         return self.__schema[position].get()
-
-    # def remove_entity(self, position: tuple, item: Entity):
-    #     self.__schema[position].append(item)
