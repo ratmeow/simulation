@@ -23,7 +23,6 @@ class Cell:
 
 
 class Map:
-
     def __init__(self, height: int, width: int):
         self.width = width
         self.height = height

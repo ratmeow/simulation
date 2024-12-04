@@ -15,10 +15,12 @@ class GenerateCreature(Action):
         pass
 
     def execute(self, map_: Map):
-        available_positions = random.sample(
+        available_positions = map_.get_all_available_positions()
+        self.count = min(len(available_positions), self.count)
+        creature_positions = random.sample(
             map_.get_all_available_positions(), self.count
         )
-        for pos in available_positions:
+        for pos in creature_positions:
             map_.add_creature(position=pos, item=self.create_creature(position=pos))
 
 
