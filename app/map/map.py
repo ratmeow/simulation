@@ -23,8 +23,6 @@ class Cell:
 
 
 class Map:
-    __schema: dict[tuple, object] = None
-    creature_storage = []
 
     def __init__(self, height: int, width: int):
         self.width = width
@@ -32,6 +30,7 @@ class Map:
         self.__schema: dict[tuple, Cell] = {
             (x, y): Cell() for x, y in itertools.product(range(height), range(width))
         }
+        self.creature_storage = []
 
     @property
     def schema(self):
